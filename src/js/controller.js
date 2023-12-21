@@ -1,3 +1,12 @@
+import * as model from './model.js';
+import recipeView from './views/recipeView.js';
+
+// Polyfilling everything else
+import 'core-js/actual';
+import 'regenerator-runtime/runtime';
+import recipeView from './views/recipeView.js';
+
+///////////////////////////////////////
 const recipeContainer = document.querySelector('.recipe');
 
 const timeout = function (s) {
@@ -11,22 +20,24 @@ const timeout = function (s) {
 // https://forkify-api.herokuapp.com/v2
 
 ///////////////////////////////////////
-import { convertSnakeCaseToCamelCase } from './utils.js'
 
-const showRecipe = async function() {
+// show-Recipe
+const controlRecipes = async function() {
     try {
-        const response = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bc886`);
+        const id = window.location.hash.slice(1);
 
-        const data = await response.json();
+        if (!id) return;
+        recipeView.renderSpinner(recipeContainer);
 
-        if (!response.ok) throw new Error(`${data.message} (${res.status})`);
-        const recipe = convertSnakeCaseToCamelCase(data.data.recipe);
-        console.log(recipe);
+        // 1) Loading recipe
+        await model.loadRecipe(id);
 
-        // console.log(response, data);
+        // 2) Rendering recipe
+        recipeView.render(model.state.recipe);
     } catch (error) {
-        alert(error)
+        console.error(error);
+        alert(error);
     };
 };
 
-showRecipe();
+['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipes));
