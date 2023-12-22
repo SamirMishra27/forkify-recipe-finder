@@ -3,6 +3,10 @@ import { API_URL } from './config.js';
 
 export const state = {
     recipe: {},
+    search: {
+        query: '',
+        results: [],
+    },
 };
 
 export const loadRecipe = async function(id) {
@@ -17,3 +21,17 @@ export const loadRecipe = async function(id) {
         throw err;
     };
 };
+
+export const loadSearchResults = async function(query) {
+    try {
+        state.search.query = query;
+        const data = await getJSON(`${API_URL}?search=${query}`);
+        console.log(data);
+
+        state.search.results = data.data.recipes.map(recipe => convertData(recipe));
+    } catch (error) {
+        console.error(error);
+        throw error;
+    };
+};
+loadSearchResults('pizza');
