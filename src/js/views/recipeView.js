@@ -1,83 +1,26 @@
+import View from './View.js';
+
 import icons from 'url:../../img/icons.svg'; // Parcel 2
 import { Fraction } from 'fractional';
 
-class RecipeView {
-    #parentElement = document.querySelector('.recipe');
-    #data;
-    #errorMessage = 'We could not find that recipe. Please try another one!';
-    #message = '';
-
-    render(data) {
-        this.#data = data;
-        const markup = this.#generateMarkup();
-
-        // Clear parent element and insert markup
-        this.#clear();
-        this.#parentElement.insertAdjacentHTML('afterbegin', markup);
-    }
-
-    #clear() {
-        this.#parentElement.innerHTML = '';
-    }
-
-    renderSpinner = function (parentEl) {
-        const markup = `
-        <div class="spinner">
-            <svg>
-                <use href="${icons}#icon-loader"></use>
-            </svg>
-        </div>
-        `;
-
-        this.#clear();
-        this.#parentElement.insertAdjacentHTML('afterbegin', markup);
-    };
-
-    renderError(message = this.#errorMessage) {
-        const markup = `
-        <div class="error">
-            <div>
-                <svg>
-                    <use href="${icons}#icon-alert-triangle"></use>
-                </svg>
-            </div>
-            <p>${message}</p>
-        </div>
-        `;
-
-        this.#clear();
-        this.#parentElement.insertAdjacentHTML('afterbegin', markup);
-    }
-
-    renderMessage(message = this.#errorMessage) {
-        const markup = `
-        <div class="message">
-            <div>
-                <svg>
-                    <use href="${icons}#icon-smile"></use>
-                </svg>
-            </div>
-            <p>${message}</p>
-        </div>
-        `;
-
-        this.#clear();
-        this.#parentElement.insertAdjacentHTML('afterbegin', markup);
-    }
+class RecipeView extends View {
+    _parentElement = document.querySelector('.recipe');
+    _errorMessage = 'We could not find that recipe. Please try another one!';
+    _message = '';
 
     addHandlerRender(handler) {
         // The handler will listen to the hashchange and load events
         ['hashchange', 'load'].forEach(event => window.addEventListener(event, handler));
     }
 
-    #generateMarkup() {
-        const recipe = this.#data;
+    _generateMarkup() {
+        const recipe = this._data;
 
         return `
         <figure class="recipe__fig">
           <img src="${recipe.imageUrl}" alt="${recipe.title}" class="recipe__img" />
           <h1 class="recipe__title">
-            <span>#${recipe.title}</span>
+            <span>${recipe.title}</span>
           </h1>
         </figure>
 
@@ -126,7 +69,7 @@ class RecipeView {
           <h2 class="heading--2">Recipe ingredients</h2>
           <ul class="recipe__ingredient-list">
           <!-- I did not know you can do this! -->
-            ${recipe.ingredients.map(this.#generateMarkupIngredient).join('')}
+            ${recipe.ingredients.map(this._generateMarkupIngredient).join('')}
           </ul>
         </div>
 
@@ -151,7 +94,7 @@ class RecipeView {
         `;
     }
 
-    #generateMarkupIngredient(item) {
+    _generateMarkupIngredient(item) {
         return `
         <li class="recipe__ingredient">
             <svg class="recipe__icon">
