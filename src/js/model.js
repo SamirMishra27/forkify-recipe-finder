@@ -1,11 +1,13 @@
 import { convertSnakeCaseToCamelCase as convertData, getJSON } from './helpers.js'
-import { API_URL } from './config.js';
+import { API_URL, RES_PER_PAGE } from './config.js';
 
 export const state = {
     recipe: {},
     search: {
         query: '',
         results: [],
+        page: 1,
+        resultsPerPage: RES_PER_PAGE,
     },
 };
 
@@ -35,3 +37,13 @@ export const loadSearchResults = async function(query) {
     };
 };
 loadSearchResults('pizza');
+
+export const getSearchResultsPage = function(page = state.search.page) {
+    state.search.page = page;
+    perPage = state.search.resultsPerPage;
+
+    const start = (page - 1) * perPage;
+    const end = page * perPage;  // 10 results per page
+
+    return state.search.results.slice(start, end);
+};
