@@ -43,3 +43,19 @@ export const getJSON = async function (url) {
     }
 
 };
+
+export const sendJSON = async function (url, payload) {
+    const apiCall = fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    });
+
+    const res = await Promise.race([apiCall, timeout(TIMEOUT_SEC)]);
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+    return data;
+};
