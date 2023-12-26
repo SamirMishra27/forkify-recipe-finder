@@ -10,3 +10,7 @@ node_modules/
 
 # Others
 roughcode.js
+
+# Images
+forkify-architecture*.png
+forkify-flowchart*.png
