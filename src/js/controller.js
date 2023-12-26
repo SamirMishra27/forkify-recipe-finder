@@ -3,11 +3,12 @@ import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
+import recipeView from './views/recipeView.js';
+import bookmarksView from './views/bookmarksView.js';
 
 // Poly-filling everything else
 import 'core-js/actual';
 import 'regenerator-runtime/runtime';
-import recipeView from './views/recipeView.js';
 
 ///////////////////////////////////////
 const recipeContainer = document.querySelector('.recipe');
@@ -26,6 +27,7 @@ const controlRecipes = async function() {
 
         // 0) Update results view to mark selected search result
         resultsView.update(model.getSearchResultsPage());
+        bookmarksView.update(model.state.bookmarks);
 
         // 1) Loading recipe
         await model.loadRecipe(id);
