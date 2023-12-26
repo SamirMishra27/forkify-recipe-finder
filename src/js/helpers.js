@@ -27,35 +27,25 @@ export function convertSnakeCaseToCamelCase(object) {
     };
 };
 
-export const getJSON = async function (url) {
+export const AJAX = async function (url, uploadData = undefined) {
     try {
-        const response = await Promise.race([fetch(url), timeout(TIMEOUT_SEC)]);
+        const apiCall = uploadData
+            ? fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(uploadData)
+            }) : fetch(url);
+
+        const response = await Promise.race([apiCall, timeout(TIMEOUT_SEC)]);
+        if (!response.ok) throw new Error(`${data.message} (${response.status})`);
 
         // Get data from response
         const data = await response.json();
 
-        // Throw error if response is not ok
-        if (!response.ok) throw new Error(`${data.message} (${res.status})`);
-
         return data;
-    } catch (err) {
-        throw err;
-    }
-
-};
-
-export const sendJSON = async function (url, payload) {
-    const apiCall = fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    });
-
-    const res = await Promise.race([apiCall, timeout(TIMEOUT_SEC)]);
-    const data = await res.json();
-
-    if (!res.ok) throw new Error(`${data.message} (${res.status})`);
-    return data;
+    } catch (error) {
+        throw error;
+    };
 };

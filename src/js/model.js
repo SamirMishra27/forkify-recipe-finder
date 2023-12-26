@@ -1,4 +1,4 @@
-import { convertSnakeCaseToCamelCase as convertData, getJSON, sendJSON } from './helpers.js'
+import { convertSnakeCaseToCamelCase as convertData, AJAX } from './helpers.js'
 import { API_URL, RES_PER_PAGE, FORKIFY_API_KEY } from './config.js';
 
 export const state = {
@@ -15,7 +15,7 @@ export const state = {
 export const loadRecipe = async function(id) {
     try {
         // Get the data from the API
-        const data = await getJSON(`${API_URL}${id}`);
+        const data = await AJAX(`${API_URL}${id}?key=${FORKIFY_API_KEY}`);
 
         // Store recipe in state
         state.recipe = convertData(data.data.recipe);
@@ -33,8 +33,8 @@ export const loadRecipe = async function(id) {
 export const loadSearchResults = async function(query) {
     try {
         state.search.query = query;
-        const data = await getJSON(`${API_URL}?search=${query}`);
-        console.log(data);
+        const data = await AJAX(`${API_URL}?search=${query}&key=${FORKIFY_API_KEY}`);
+        // console.log(data);
 
         state.search.results = data.data.recipes.map(recipe => convertData(recipe));
         state.search.page = 1;
@@ -122,7 +122,7 @@ export const uploadRecipe = async function(newRecipe) {
         ingredients
     };
 
-    const data = await sendJSON(`${API_URL}?key=${FORKIFY_API_KEY}`, recipe);
+    const data = await AJAX(`${API_URL}?key=${FORKIFY_API_KEY}`, recipe);
     // Key is already there.
     state.recipe = convertData(data.data.recipe);
     addBookmark(state.recipe);
